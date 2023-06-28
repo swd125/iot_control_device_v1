@@ -42,6 +42,7 @@ def publish(client, toggle):
     else:
         print(f"Failed to send message to topic {topic}")
 
+
 def control_device():
     client = connect_mqtt()
     client.loop_start()
@@ -50,6 +51,26 @@ def control_device():
         time.sleep(2)
         publish(client, toggle)
         toggle = 0 if toggle else 1
+    client.loop_stop()
+    return 'complete'
+
+
+def publish_with_msg(client, topic, msg):
+
+    result = client.publish(topic, json.dumps(msg))
+    # result: [0, 1]
+    status = result[0]
+    if status == 0:
+        print(f"Send `{msg}` to topic `{topic}`")
+    else:
+        print(f"Failed to send message to topic {topic}")
+
+
+def control_device_with_params(topic ,message):
+    client = connect_mqtt()
+    client.loop_start()
+    time.sleep(2)
+    publish_with_msg(client, topic, message)
     client.loop_stop()
     return 'complete'
 
